@@ -12,9 +12,5 @@ D:\Project\MyNetGame\MyNetGameDB\bin\Debug\MyNetGameDB.dacpac
 D:\Project\MyNetGame\MyNetGameDB\bin\Debug\MyNetGameDB.dll
 D:\Project\MyNetGame\MyNetGameDB\bin\Debug\MyNetGameDB.pdb
 D:\Project\MyNetGame\MyNetGameDB\obj\Debug\MyNetGameDB.sqlproj.AssemblyReference.cache
-D:\Project\MyNetGame\MyNetGameDB\obj\Debug\Model.xml
-D:\Project\MyNetGame\MyNetGameDB\obj\Debug\refactor.xml
-D:\Project\MyNetGame\MyNetGameDB\obj\Debug\postdeploy.sql
-D:\Project\MyNetGame\MyNetGameDB\obj\Debug\predeploy.sql
 D:\Project\MyNetGame\MyNetGameDB\obj\Debug\MyNetGameDB.dll
 D:\Project\MyNetGame\MyNetGameDB\obj\Debug\MyNetGameDB.pdb

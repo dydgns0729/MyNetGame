@@ -7,23 +7,23 @@ namespace MyNetGame.Component
 {
     public class MyUser
     {
-
+        //Empty
     }
 
     /// <summary>
-    /// 리포지토리 인터페이스 - 기능정의
+    /// 리포지토리 인터페이스 - 기능 정의
     /// </summary>
     public interface IUserRepository
     {
         User Add(User user);
         List<User> GetAll();
         User GetByUserId(string UserId);
-        User Update(User user);
+        User Upadte(User user);
         void Remove(string UserId);
     }
 
     /// <summary>
-    /// 리포지토리 클래스 - 기능정의
+    /// 리포지토리 클래스 - 기능 구현
     /// </summary>
     public class UserRepository : IUserRepository
     {
@@ -33,13 +33,14 @@ namespace MyNetGame.Component
         public UserRepository(IConfiguration config)
         {
             _config = config;
-            db = new SqlConnection(_config.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value);
+            db = new SqlConnection(config.GetSection("ConnectionStrings")
+                .GetSection("DefaultConnection").Value);
         }
 
         public User Add(User user)
         {
             string sql = @"INSERT INTO userTbl (userId, password, mobile, level, health, gold, mDate) VALUES (@UserId, @Password, @Mobile, @Level, @Health, @Gold, GETDATE());
-                         SELECT * FROM userTbl WHERE userId = @UserId;";
+                            SELECT * FROM userTbl WHERE userId = @UserId;";
             return db.Query<User>(sql, user).Single();
         }
 
@@ -61,7 +62,7 @@ namespace MyNetGame.Component
             db.Execute(sql, new { UserId = UserId });
         }
 
-        public User Update(User user)
+        public User Upadte(User user)
         {
             string sql = @"UPDATE userTbl SET level = level + 1, gold = @Gold WHERE userId = @UserId;
                          SELECT * FROM userTbl WHERE userId = @UserId;";
@@ -70,14 +71,12 @@ namespace MyNetGame.Component
     }
 
     /// <summary>
-    /// Web - Api 구현
+    /// Web-Api 구현
     /// </summary>
     [Route("api/[controller]")]
     public class UserServicesController : ControllerBase
     {
-        #region Variables
         private IUserRepository _repository;
-        #endregion
 
         public UserServicesController(IUserRepository repository)
         {
@@ -91,9 +90,9 @@ namespace MyNetGame.Component
             try
             {
                 var users = _repository.GetAll();
-                if (users == null || users.Count <= 0)
+                if (users == null || users.Count == 0)
                 {
-                    return NotFound("유저 데이터가 없습니다.");
+                    return NotFound("유저 데이터가 없습니다");
                 }
                 return Ok(users);
             }
@@ -102,16 +101,16 @@ namespace MyNetGame.Component
                 return BadRequest();
             }
         }
+
         [HttpGet("{UserId}")]
         public IActionResult Get(string UserId)
         {
             try
             {
                 var user = _repository.GetByUserId(UserId);
-
                 if (user == null)
                 {
-                    return NotFound($"{UserId}유저 데이터가 없습니다.");
+                    return NotFound($"{UserId} 유저 데이터가 없습니다");
                 }
                 return Ok(user);
             }
@@ -124,7 +123,6 @@ namespace MyNetGame.Component
         [HttpPost]
         public IActionResult Post([FromBody] User user)
         {
-
             if (user == null)
             {
                 return BadRequest();
@@ -135,7 +133,7 @@ namespace MyNetGame.Component
                 var model = _repository.Add(user);
                 if (model == null)
                 {
-                    return BadRequest("유저 추가 실패");
+                    return BadRequest("유저 추가에 실패 했습니다");
                 }
                 return Ok(model);
             }
@@ -152,15 +150,17 @@ namespace MyNetGame.Component
             {
                 return BadRequest();
             }
+
             try
             {
                 var OldUser = _repository.GetByUserId(UserId);
                 if (OldUser == null)
                 {
-                    return NotFound("유저 정보가 없습니다");
+                    return NotFound($"{UserId} 유저 데이터가 없습니다");
                 }
+
                 user.UserId = UserId;
-                var model = _repository.Update(user);
+                var model = _repository.Upadte(user);
                 return Ok(model);
             }
             catch
@@ -172,27 +172,22 @@ namespace MyNetGame.Component
         [HttpDelete("{UserId}")]
         public IActionResult Delete(string UserId)
         {
-            if (UserId == null)
-            {
-                return BadRequest();
-            }
             try
             {
                 var OldUser = _repository.GetByUserId(UserId);
                 if (OldUser == null)
                 {
-                    return NotFound("유저 정보가 없습니다");
+                    return NotFound($"{UserId} 유저 데이터가 없습니다");
                 }
+
                 _repository.Remove(UserId);
-                return Ok();
+                return NoContent();
             }
             catch
             {
                 return BadRequest();
             }
-
         }
-
     }
 
     /// <summary>

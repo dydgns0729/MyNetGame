@@ -8,7 +8,6 @@ namespace MyNetGame.Component
 {
     public class MyUserAdd
     {
-
         //Empty
     }
 
